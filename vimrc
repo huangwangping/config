@@ -189,3 +189,46 @@ set encoding=utf8
 "vim winmanager
 let g:winManagerWindowLayout="FileExplorer,BufExplorer"
 nmap <silent><F8> :WMToggle<cr>
+
+
+
+"""""新文件标题""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+"新建.c,.h,.sh,.java文件，自动插入文件头 
+autocmd BufNewFile *.py,*.cpp,*.[ch],*.sh,*.java exec ":call SetTitle()" 
+""定义函数SetTitle，自动插入文件头 
+func SetTitle() 
+    "如果文件类型为.sh文件 
+    if &filetype == 'sh' 
+        call setline(1,"\#!/bin/bash") 
+        call append(line("."), "\# Author: Gw.Huangwp") 
+        call append(line(".")+1, "\# mail: huangwangping@youmi.net") 
+        call append(line(".")+2, "\# Created Time: ".strftime("%Y-%m-%d")) 
+        call append(line(".")+3, "") 
+    elseif &filetype == 'python'
+        call setline(1, "\#!/usr/bin/env python")
+        call append(line("."), "\#-*- encoding: utf-8 -*-")
+        call append(line(".")+1, "\# Author: Gw.Huangwp")
+        call append(line(".")+2, "\# mail: huangwangping@youmi.net")
+        call append(line(".")+3, "\# Created Time: ".strftime("%Y-%m-%d")) 
+        call append(line(".")+4, "\"\"\"")
+        call append(line(".")+5, "\"\"\"")
+    else 
+        call setline(1, "\/**************************************************") 
+        call append(line("."), "    > Author: Gw.Huangwp") 
+        call append(line(".")+1, "    > mail: huangwangping@youmi.net") 
+        call append(line(".")+2, "    > Created Time: ".strftime("%Y-%m-%d")) 
+        call append(line(".")+3, " **************************************************/") 
+        call append(line(".")+4, "")
+    endif
+    if &filetype == 'cpp'
+        call append(line(".")+5, "#include<iostream>")
+        call append(line(".")+6, "using namespace std;")
+        call append(line(".")+7, "")
+    endif
+    if &filetype == 'c'
+        call append(line(".")+5, "#include<stdio.h>")
+        call append(line(".")+6, "")
+    endif
+    "新建文件后，自动定位到文件末尾
+    autocmd BufNewFile * normal G
+endfunc 
