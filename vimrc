@@ -38,7 +38,7 @@ set showcmd
 
 "代码折叠
 set foldmethod=syntax
-""set foldlevelstart=99
+set foldlevelstart=99
 
 "设置历史记录条数
 set history=1000
@@ -164,10 +164,13 @@ Bundle 'spf13/vim-colors'
 " ...
 "
 " go
-""Bundle 'fatih/vim-go'
-Bundle 'cespare/vim-golang'
+Bundle 'fatih/vim-go'
+Bundle 'nsf/gocode' , {'rtp': 'vim/'}
 Bundle 'Blackrush/vim-gocode'
 Bundle 'dgryski/vim-godef'
+Bundle 'cespare/vim-golang'
+
+autocmd BufWritePre *.go :Fmt
  
 filetype plugin indent on     " required!
 "
@@ -182,7 +185,6 @@ filetype plugin indent on     " required!
 
 "vim-power-line插件
 set laststatus=2
-set t_Co=256
 let g:Powerline_symbols = 'unicode'
 set encoding=utf8
 
@@ -194,36 +196,48 @@ nmap <silent><F8> :WMToggle<cr>
 
 """""新文件标题""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 "新建.c,.h,.sh,.java文件，自动插入文件头 
-autocmd BufNewFile *.py,*.cpp,*.[ch],*.sh,*.java exec ":call SetTitle()" 
+autocmd BufNewFile *.py,*.cpp,*.cxx,*.cc,*.[ch],*.sh,*.go,*.java,*.php exec ":call SetTitle()" 
 ""定义函数SetTitle，自动插入文件头 
 func SetTitle() 
     "如果文件类型为.sh文件 
     if &filetype == 'sh' 
         call setline(1,"\#!/bin/bash") 
-        call append(line("."), "\# Author: Gw.Huangwp") 
-        call append(line(".")+1, "\# mail: huangwangping@youmi.net") 
-        call append(line(".")+2, "\# Created Time: ".strftime("%Y-%m-%d")) 
-        call append(line(".")+3, "") 
+        call append(line("."), "\#") 
+        call append(line(".")+1, "\# Copyright 2014 Youmi") 
+        call append(line(".")+2, "\#") 
+        call append(line(".")+3, "\# @author: huangwangping@youmi.net") 
+        call append(line(".")+4, "\# Created Time: ".strftime("%Y-%m-%d")) 
+        call append(line(".")+5, "") 
     elseif &filetype == 'python'
         call setline(1, "\#!/usr/bin/env python")
-        call append(line("."), "\#-*- encoding: utf-8 -*-")
-        call append(line(".")+1, "\# Author: Gw.Huangwp")
-        call append(line(".")+2, "\# mail: huangwangping@youmi.net")
-        call append(line(".")+3, "\# Created Time: ".strftime("%Y-%m-%d")) 
-        call append(line(".")+4, "\"\"\"")
-        call append(line(".")+5, "\"\"\"")
+        call append(line("."), "\# -*- encoding: utf-8 -*-")
+        call append(line(".")+1, "\#") 
+        call append(line(".")+2, "\# Copyright 2014 Youmi") 
+        call append(line(".")+3, "\#") 
+        call append(line(".")+4, "\# @author: huangwangping@youmi.net")
+        call append(line(".")+5, "\# Created Time: ".strftime("%Y-%m-%d")) 
+        call append(line(".")+6, "\"\"\"")
+        call append(line(".")+7, "\"\"\"")
+    elseif &filetype == 'php'
+        call setline(1, "<?php")
+        call append(line("."), "\#") 
+        call append(line(".")+1, "\# Copyright 2014 Youmi") 
+        call append(line(".")+2, "\#") 
+        call append(line(".")+3, "\# @author: huangwangping@youmi.net") 
+        call append(line(".")+4, "\# Created Time: ".strftime("%Y-%m-%d")) 
+        call append(line(".")+5, "")
+        call append(line(".")+6, "?>")
     else 
         call setline(1, "\/**************************************************") 
-        call append(line("."), "    > Author: Gw.Huangwp") 
-        call append(line(".")+1, "    > mail: huangwangping@youmi.net") 
-        call append(line(".")+2, "    > Created Time: ".strftime("%Y-%m-%d")) 
-        call append(line(".")+3, " **************************************************/") 
-        call append(line(".")+4, "")
+        call append(line("."), "    Copyright 2014 Youmi") 
+        call append(line(".")+1, "") 
+        call append(line(".")+2, "    @author: huangwangping@youmi.net") 
+        call append(line(".")+3, "    Created Time: ".strftime("%Y-%m-%d")) 
+        call append(line(".")+4, " **************************************************/") 
+        call append(line(".")+5, "")
     endif
-    if &filetype == 'cpp'
-        call append(line(".")+5, "#include<iostream>")
-        call append(line(".")+6, "using namespace std;")
-        call append(line(".")+7, "")
+    if &filetype == 'cpp' || &filetype == 'cxx' "|| &filetype == 'cc'
+        call append(line(".")+6, "#include <iostream>")
     endif
     if &filetype == 'c'
         call append(line(".")+5, "#include<stdio.h>")
